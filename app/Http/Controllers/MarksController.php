@@ -31,7 +31,7 @@ class MarksController extends Controller
     
     public function storeMarks(Request $request) {
         $validationArray = [
-            'studen_id' => 'required',
+            'student' => 'required',
             'term' => 'required',
             'maths' => 'required',
             'science' => 'required',
@@ -56,7 +56,7 @@ class MarksController extends Controller
         DB::beginTransaction();
         $mark = new Marks();
 
-        $mark->studentId = $request->get('studen_id');
+        $mark->studentId = $request->get('student');
         $mark->maths = $request->get('maths');
         $mark->science = $request->get('science');
         $mark->history = $request->get('history');
@@ -106,5 +106,68 @@ class MarksController extends Controller
             ]
         );
 
+    }
+
+    public function getTerms () {
+        $term = DB::table('term AS t')
+            ->select(
+                't.id AS id',
+                't.term AS term'
+            );
+
+        $term = $term->get();
+
+        return response()->json([
+            "status" => 200,
+            "data" => $term,
+        ]);
+    }
+
+    public function updateMarks($id, Request $request) {
+
+        $student = Marks::find($id);
+
+        $validationArray = [
+            'student' => 'required',
+            'term' => 'required',
+            'maths' => 'required',
+            'science' => 'required',
+            'history' => 'required'
+        ];
+
+        $validator = Validator::make(
+            $request->all(),
+            $validationArray
+        );
+
+        if ($validator->fails()) {
+            return response()->json(
+                [
+                    'status' => 422,
+                    'messages' => $validator->errors(),
+                ],
+                422
+            );
+        }
+
+        DB::beginTransaction();
+
+        $mark->studentId = $request->get('student');
+        $mark->maths = $request->get('maths');
+        $mark->science = $request->get('science');
+        $mark->history = $request->get('history');
+        $mark->term = $request->get('term');
+        $mark->totalmark = $request->get('maths') + ($request->get('history')) + $request->get('science');
+        
+        if($mark->save()) {
+            DB::commit();
+            return response()->json(
+                [
+                    'status' => 200,
+                    'message' => 'Student Updated',
+                ],
+                200
+            );
+        }
     }
 }

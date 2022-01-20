@@ -18,22 +18,18 @@ use Illuminate\Http\Request;
 //     return $request->user();
 // });
 
-// Route::group(
-//     [
-//         'middleware' => ['auth:api', 'tokenBlacklistCheck'],
-//     ],
-//     function () {
-//         Route::get('teachers', 'TeachersController@teachersList');
-//     }
-// );
+
 Route::get('/teachers', 'TeachersController@teachersList');
 
 Route::post('/student', 'StudentsController@storeStudent');
 Route::get('/studentsList', 'StudentsController@studentsList');
 Route::patch('/student/{$id}, StudentsController@updateStudent');
 Route::delete('/student/{studentId}, StudentsController@delete');
+Route::get('/genderList', 'StudentsController@getGender');
 
 Route::get('/marksList', 'MarksController@marksList');
 Route::post('/marks', 'MarksController@storeMarks');
+Route::post('/marks/{$id}, MarksController@updateMarks');
 Route::delete('/marks/{markId}, MarksController@delete');
+Route::get('/termList', 'MarksController@getTerms');
 

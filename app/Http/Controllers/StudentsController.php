@@ -20,7 +20,8 @@ class StudentsController extends Controller
                 's.name AS name',
                 's.age AS age',
                 's.gender AS gender',
-                't.name AS teacher'
+                't.name AS teacher',
+                't.id AS teacherID'
             );
 
         $students = $students->get();
@@ -146,5 +147,20 @@ class StudentsController extends Controller
             ]
         );
 
+    }
+
+    public function getGender () {
+        $gender = DB::table('gender AS g')
+            ->select(
+                'g.id AS id',
+                'g.gender AS gender'
+            );
+
+        $gender = $gender->get();
+
+        return response()->json([
+            "status" => 200,
+            "data" => $gender,
+        ]);
     }
 }
